@@ -2,7 +2,6 @@
 
 **Candidate:** Juan Sebastian Urrea
 **Program:** PM Accelerator — AI Engineer Intern
-**Email:** jurrea@truora.com
 
 > "By making industry-leading tools and education available to individuals from all backgrounds, we level the playing field for future PM leaders." — PM Accelerator
 
