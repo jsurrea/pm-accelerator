@@ -5,7 +5,7 @@
 
 > "By making industry-leading tools and education available to individuals from all backgrounds, we level the playing field for future PM leaders." — PM Accelerator
 
-A full-stack weather application built with Next.js 14 (App Router), SQLite, and real-world APIs.
+A full-stack weather application built with Next.js 14 (App Router), Turso (libsql), and real-world APIs.
 
 ---
 
@@ -16,7 +16,7 @@ A full-stack weather application built with Next.js 14 (App Router), SQLite, and
 | Framework | Next.js 14 (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
-| Database | SQLite (better-sqlite3) |
+| Database | Turso (libsql) |
 | Validation | Zod |
 | Maps | React Leaflet + OpenStreetMap |
 | Weather API | OpenWeatherMap |
@@ -44,10 +44,12 @@ A full-stack weather application built with Next.js 14 (App Router), SQLite, and
 2. **Configure environment variables**
 
    Create `.env.local` in the project root:
-   ```
-   OPENWEATHER_API_KEY=your_openweather_api_key_here
-   YOUTUBE_API_KEY=your_youtube_api_key_here
-   ```
+    ```
+    OPENWEATHER_API_KEY=your_openweather_api_key_here
+    YOUTUBE_API_KEY=your_youtube_api_key_here
+    TURSO_DATABASE_URL=your_turso_database_url_here
+    TURSO_AUTH_TOKEN=your_turso_auth_token_here
+    ```
 
 3. **Run the development server**
    ```bash
@@ -72,7 +74,7 @@ A full-stack weather application built with Next.js 14 (App Router), SQLite, and
 
 ### Assessment 2 — Backend
 
-- SQLite database (better-sqlite3) with WAL mode
+- Turso (libsql) database for search history
 - Full CRUD REST API for search history
 - Zod input validation on all endpoints
 - Weather data captured and stored per search entry
@@ -115,7 +117,6 @@ weather-app/
 │   └── youtube/           # Video gallery
 ├── hooks/                 # React custom hooks
 ├── lib/                   # Utilities: DB, APIs, validation, export
-└── data/                  # SQLite database (gitignored)
 ```
 
 ---

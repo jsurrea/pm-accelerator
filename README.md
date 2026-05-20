@@ -23,15 +23,15 @@ pm-accelerator/
 
 **Location:** [`weather-app/`](./weather-app/)
 
-A production-ready full-stack weather application built with **Next.js 14**, **SQLite**, and real-world APIs. Covers both the frontend (Assessment 1) and backend (Assessment 2) requirements.
+A production-ready full-stack weather application built with **Next.js 14**, **Turso (libsql)**, and real-world APIs. Covers both the frontend (Assessment 1) and backend (Assessment 2) requirements.
 
 ### Highlights
 
 | Area | Details |
 |------|---------|
 | Frontend | Responsive UI, location search, geolocation, 5-day forecast, Leaflet maps, YouTube gallery |
-| Backend | RESTful API routes, SQLite CRUD, Zod validation, 5-format data export (JSON/CSV/XML/PDF/MD) |
-| Stack | Next.js 14 · TypeScript · Tailwind CSS · better-sqlite3 · React Leaflet · jsPDF |
+| Backend | RESTful API routes, Turso CRUD, Zod validation, 5-format data export (JSON/CSV/XML/PDF/MD) |
+| Stack | Next.js 14 · TypeScript · Tailwind CSS · Turso (libsql) · React Leaflet · jsPDF |
 
 ### Quick Start
 
@@ -42,6 +42,8 @@ npm install
 # Create .env.local with your API keys:
 # OPENWEATHER_API_KEY=your_key
 # YOUTUBE_API_KEY=your_key
+# TURSO_DATABASE_URL=your_turso_database_url
+# TURSO_AUTH_TOKEN=your_turso_auth_token
 
 npm run dev
 # Open http://localhost:3000

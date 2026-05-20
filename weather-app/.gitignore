@@ -34,11 +34,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# local database
-data/weather.db
-
-# SQLite database files
-data/weather.db
-data/weather.db-shm
-data/weather.db-wal

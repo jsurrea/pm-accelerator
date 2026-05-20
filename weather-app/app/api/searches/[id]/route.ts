@@ -14,7 +14,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const search = getSearchById(id)
+    const search = await getSearchById(id)
     if (!search) {
       return NextResponse.json({ error: 'Search not found' }, { status: 404 })
     }
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Re-fetch weather if lat/lon changed
     if (parsed.data.lat !== undefined && parsed.data.lon !== undefined) {
-      const existing = getSearchById(id)
+      const existing = await getSearchById(id)
       const lat = parsed.data.lat ?? existing?.lat
       const lon = parsed.data.lon ?? existing?.lon
       if (lat !== undefined && lon !== undefined) {
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    const updated = updateSearch(id, updateData)
+    const updated = await updateSearch(id, updateData)
     if (!updated) {
       return NextResponse.json({ error: 'Search not found' }, { status: 404 })
     }
@@ -76,7 +76,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const deleted = deleteSearch(id)
+    const deleted = await deleteSearch(id)
     if (!deleted) {
       return NextResponse.json({ error: 'Search not found' }, { status: 404 })
     }
