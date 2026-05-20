@@ -1,17 +1,17 @@
-import Database from 'better-sqlite3'
-import path from 'path'
+import { createClient, type Client } from '@libsql/client'
 
-const DB_PATH = path.join(process.cwd(), 'data', 'weather.db')
+let db: Client | undefined
+let dbInit: Promise<void> | undefined
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __db: Database.Database | undefined
+function createDbClient(): Client {
+  return createClient({
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
+  })
 }
 
-function createDb(): Database.Database {
-  const db = new Database(DB_PATH)
-  db.pragma('journal_mode = WAL')
-  db.exec(`
+async function initializeDb(client: Client): Promise<void> {
+  await client.execute(`
     CREATE TABLE IF NOT EXISTS searches (
       id           INTEGER PRIMARY KEY AUTOINCREMENT,
       location     TEXT NOT NULL,
@@ -24,15 +24,15 @@ function createDb(): Database.Database {
       updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `)
-  return db
 }
 
-export function getDb(): Database.Database {
-  if (process.env.NODE_ENV === 'production') {
-    return createDb()
+export async function getDb(): Promise<Client> {
+  if (!db) {
+    db = createDbClient()
   }
-  if (!globalThis.__db) {
-    globalThis.__db = createDb()
+  if (!dbInit) {
+    dbInit = initializeDb(db)
   }
-  return globalThis.__db
+  await dbInit
+  return db
 }

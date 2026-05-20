@@ -5,7 +5,7 @@ import { getCurrentWeather, getForecast } from '@/lib/weather-api'
 
 export async function GET() {
   try {
-    const searches = getAllSearches()
+    const searches = await getAllSearches()
     return NextResponse.json(searches)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to fetch searches'
@@ -33,7 +33,14 @@ export async function POST(request: NextRequest) {
     ])
 
     const weather_json = JSON.stringify({ current, forecast })
-    const search = createSearch({ location, lat, lon, date_from, date_to, weather_json })
+    const search = await createSearch({
+      location,
+      lat,
+      lon,
+      date_from,
+      date_to,
+      weather_json,
+    })
 
     return NextResponse.json(search, { status: 201 })
   } catch (error) {

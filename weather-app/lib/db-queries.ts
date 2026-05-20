@@ -15,54 +15,71 @@ export interface Search {
 export type CreateSearchData = Omit<Search, 'id' | 'created_at' | 'updated_at'>
 export type UpdateSearchData = Partial<Omit<Search, 'id' | 'created_at' | 'updated_at'>>
 
-export function getAllSearches(): Search[] {
-  const db = getDb()
-  return db.prepare('SELECT * FROM searches ORDER BY created_at DESC').all() as Search[]
+export async function getAllSearches(): Promise<Search[]> {
+  const db = await getDb()
+  const result = await db.execute('SELECT * FROM searches ORDER BY created_at DESC')
+  return result.rows as unknown as Search[]
 }
 
-export function getSearchById(id: number): Search | undefined {
-  const db = getDb()
-  return db.prepare('SELECT * FROM searches WHERE id = ?').get(id) as Search | undefined
+export async function getSearchById(id: number): Promise<Search | undefined> {
+  const db = await getDb()
+  const result = await db.execute({
+    sql: 'SELECT * FROM searches WHERE id = ?',
+    args: [id],
+  })
+  return result.rows[0] as unknown as Search | undefined
 }
 
-export function createSearch(data: CreateSearchData): Search {
-  const db = getDb()
+export async function createSearch(data: CreateSearchData): Promise<Search> {
+  const db = await getDb()
   const now = new Date().toISOString()
-  const stmt = db.prepare(`
+  const result = await db.execute({
+    sql: `
     INSERT INTO searches (location, lat, lon, date_from, date_to, weather_json, created_at, updated_at)
     VALUES (@location, @lat, @lon, @date_from, @date_to, @weather_json, @created_at, @updated_at)
-  `)
-  const result = stmt.run({ ...data, created_at: now, updated_at: now })
-  const inserted = getSearchById(result.lastInsertRowid as number)
+  `,
+    args: { ...data, created_at: now, updated_at: now },
+  })
+  const insertedId = Number(result.lastInsertRowid)
+  const inserted = await getSearchById(insertedId)
   if (!inserted) throw new Error('Failed to retrieve inserted search')
   return inserted
 }
 
-export function updateSearch(id: number, data: UpdateSearchData): Search | undefined {
-  const db = getDb()
-  const existing = getSearchById(id)
+export async function updateSearch(
+  id: number,
+  data: UpdateSearchData
+): Promise<Search | undefined> {
+  const db = await getDb()
+  const existing = await getSearchById(id)
   if (!existing) return undefined
 
   const now = new Date().toISOString()
   const updated = { ...existing, ...data, updated_at: now }
 
-  db.prepare(`
-    UPDATE searches
-    SET location = @location,
-        lat = @lat,
-        lon = @lon,
-        date_from = @date_from,
-        date_to = @date_to,
-        weather_json = @weather_json,
-        updated_at = @updated_at
-    WHERE id = @id
-  `).run({ ...updated, id })
+  await db.execute({
+    sql: `
+      UPDATE searches
+      SET location = @location,
+          lat = @lat,
+          lon = @lon,
+          date_from = @date_from,
+          date_to = @date_to,
+          weather_json = @weather_json,
+          updated_at = @updated_at
+      WHERE id = @id
+    `,
+    args: { ...updated, id },
+  })
 
   return getSearchById(id)
 }
 
-export function deleteSearch(id: number): boolean {
-  const db = getDb()
-  const result = db.prepare('DELETE FROM searches WHERE id = ?').run(id)
-  return result.changes > 0
+export async function deleteSearch(id: number): Promise<boolean> {
+  const db = await getDb()
+  const result = await db.execute({
+    sql: 'DELETE FROM searches WHERE id = ?',
+    args: [id],
+  })
+  return result.rowsAffected > 0
 }

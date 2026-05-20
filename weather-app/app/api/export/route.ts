@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const searches = getAllSearches()
+    const searches = await getAllSearches()
 
     switch (format) {
       case 'json': {
